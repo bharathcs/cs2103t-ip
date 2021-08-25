@@ -7,20 +7,22 @@ import java.util.Scanner;
  * Class to handle monitoring and taking in input.
  */
 public class Ui {
-    protected static void monitor() {
-        Scanner sc = new Scanner(System.in);
+    final private DukeLogic dukeLogic;
+    protected Ui(DukeLogic dukeLogic) {
+        this.dukeLogic = dukeLogic;
+    }
 
-        Storage.readFromDatabase();
+    protected void monitor() {
+        Scanner sc = new Scanner(System.in);
 
         while (sc.hasNextLine()) {
             String input = sc.nextLine();
-            DukeLogic.takeInput(input);
+            this.dukeLogic.takeInput(input);
             if (input.strip().equalsIgnoreCase("bye")) {
                 break;
             }
         }
         sc.close();
-        Storage.writeToDatabase();
     }
 
     /**
@@ -28,7 +30,7 @@ public class Ui {
      *
      * @param output Multi-line or single line string.
      */
-    public static void renderOutput(String output) {
+    public void renderOutput(String output) {
         System.out.println("    ____________________________________________________________");
         output.lines().map(x -> "     " + x).forEach(System.out::println);
         System.out.println("    ____________________________________________________________");

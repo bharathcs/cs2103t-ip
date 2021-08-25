@@ -16,7 +16,8 @@ import java.util.stream.Stream;
  */
 public class Storage {
 
-    public static final ArrayList<Task> tasksList = new ArrayList<>();
+    public final ArrayList<Task> tasksList = new ArrayList<>();
+    public Ui ui;
 
     /**
      * Appends specified task to the end of the list.
@@ -24,7 +25,7 @@ public class Storage {
      * @param t new Task
      * @return boolean - has adding of task succeeded.
      */
-    public static boolean add(Task t) {
+    public boolean add(Task t) {
         return tasksList.add(t);
     }
 
@@ -35,14 +36,14 @@ public class Storage {
      * @return the element at the specified position in this list
      * @throws IndexOutOfBoundsException if there is no such index in list.
      */
-    public static Task get(int index) {
+    public Task get(int index) {
         return tasksList.get(index);
     }
 
     /**
      * Removes all tasks from internal list. List will be empty after this call.
      */
-    public static void clear() {
+    public void clear() {
         tasksList.clear();
     }
 
@@ -52,7 +53,7 @@ public class Storage {
      * @param index index of the task to return
      * @throws IndexOutOfBoundsException if there is no such index in list.
      */
-    public static void remove(int index) {
+    public void remove(int index) {
         tasksList.remove(index);
     }
 
@@ -61,7 +62,7 @@ public class Storage {
      *
      * @return integer number of tasks in list.
      */
-    public static int size() {
+    public int size() {
         return tasksList.size();
     }
 
@@ -70,7 +71,7 @@ public class Storage {
      *
      * @return stream of Tasks in the list
      */
-    public static Stream<Task> stream() {
+    public Stream<Task> stream() {
         return tasksList.stream();
     }
 
@@ -79,7 +80,7 @@ public class Storage {
      * Relies on the Task class to handle conversions to and from a task object to
      * a string stored in the database.
      */
-    public static void readFromDatabase() {
+    public void readFromDatabase() {
         String dukeLocation = System.getProperty("user.dir");
         Path filePath = Paths.get(dukeLocation, "data", "tasks");
 
@@ -87,7 +88,7 @@ public class Storage {
             return;
         }
 
-        Ui.renderOutput("Reading last save  - " + filePath);
+        ui.renderOutput("Reading last save  - " + filePath);
         ArrayList<String> failedParses = new ArrayList<>();
 
         try {
@@ -105,7 +106,7 @@ public class Storage {
             );
             databaseToString.close();
         } catch (IOException e) {
-            Ui.renderOutput("Save file could not be read. It will be wiped on the next save.");
+            ui.renderOutput("Save file could not be read. It will be wiped on the next save.");
         }
 
         if (failedParses.size() > 0) {
@@ -116,7 +117,7 @@ public class Storage {
             );
             status += "Failed to parse\n:";
             status += failedParses.stream().map(x -> x + "\n").reduce("", (a, b) -> a + b);
-            Ui.renderOutput(status);
+            ui.renderOutput(status);
         }
     }
 
@@ -124,7 +125,7 @@ public class Storage {
      * Updates the user save file with the latest list of tasks.
      * If such a save file does not exist, it will create it.
      */
-    public static void writeToDatabase() {
+    public void writeToDatabase() {
         String dukeLocation = System.getProperty("user.dir");
         Path folderPath = Paths.get(dukeLocation, "data");
         Path filePath = Paths.get(dukeLocation, "data", "tasks");
@@ -134,8 +135,8 @@ public class Storage {
         tasksList.forEach(x -> save.append(x.taskToString()).append(System.lineSeparator()));
         byte[] saveResult = save.toString().getBytes();
 
-        Ui.renderOutput("Saving tasks  - " + filePath);
-        Ui.renderOutput("DEBUG: Text to be saved \n" + save);
+        ui.renderOutput("Saving tasks  - " + filePath);
+        ui.renderOutput("DEBUG: Text to be saved \n" + save);
 
         try {
             if (!Files.isDirectory(folderPath)) {
@@ -147,7 +148,7 @@ public class Storage {
             Files.write(filePath, saveResult);
         } catch (IOException e) {
             // Potentially add why it failed (e.g. no write permissions in folder)
-            Ui.renderOutput("File could not be saved. - " + e.getMessage());
+            ui.renderOutput("File could not be saved. - " + e.getMessage());
         }
     }
 }
