@@ -2,23 +2,21 @@ package duke;
 
 import duke.tasks.InvalidTaskException;
 import duke.tasks.Task;
+import duke.tasks.TaskList;
 
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Handles matching input to behaviour and execution action.
  * Using function `takeInput` with the input string will run the function
  * and return true or false (whether or not to continue monitoring input)
  */
-public class DukeLogic {
+public class Parser {
 
-    // todo: drop the use use of taskList
-    final private Storage storage;
-    final private ArrayList<Task> tasks;
+    final private TaskList tasks;
 
-    protected DukeLogic(Storage storage) {
-        this.storage = storage;
-        this.tasks = storage.tasksList;
+    protected Parser(TaskList taskList) {
+        this.tasks = taskList;
     }
 
     enum Actions {
@@ -51,10 +49,6 @@ public class DukeLogic {
             return addTask(getArgs(input, "deadline "), Task.Type.DEADLINE);
         } else if (startsWithOrEquals("event ", input)) {
             return addTask(getArgs(input, "event "), Task.Type.EVENT);
-        } else if (matches("save", input)) {
-            storage.writeToDatabase();
-            storage.readFromDatabase();
-            return "";
         } else if (matches("reset", input)) {
             tasks.clear();
             return "Cleared";
@@ -82,7 +76,7 @@ public class DukeLogic {
     private String listTasks() {
         int taskCount = 1;
         StringBuilder result = new StringBuilder();
-        for (Task task : tasks) {
+        for (Task task : this.tasks.stream().collect(Collectors.toList())) {
             result.append(String.format("%2d. %s\n", taskCount++, task));
         }
         return result.toString();

@@ -8,10 +8,10 @@ import java.util.Scanner;
  */
 public class Ui {
 
-    final private DukeLogic dukeLogic;
+    final private Parser parser;
 
-    protected Ui(DukeLogic dukeLogic) {
-        this.dukeLogic = dukeLogic;
+    protected Ui(Parser parser) {
+        this.parser = parser;
     }
 
     protected void monitor() {
@@ -19,7 +19,7 @@ public class Ui {
 
         while (sc.hasNextLine()) {
             String input = sc.nextLine();
-            this.dukeLogic.takeInput(input);
+            this.parser.takeInput(input);
             if (input.strip().equalsIgnoreCase("bye")) {
                 break;
             }

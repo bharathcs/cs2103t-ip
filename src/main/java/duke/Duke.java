@@ -1,6 +1,8 @@
 package duke;
 
 
+import duke.tasks.TaskList;
+
 /**
  * CLI Task manager based on Duke.
  *
@@ -10,14 +12,16 @@ public class Duke {
 
     private final Ui ui;
     private final Storage storage;
+    private final TaskList tasks;
 
     /**
      * Instantiates the Duke object and its required components.
      */
     public Duke() {
-        storage = new Storage();
-        DukeLogic dukeLogic = new DukeLogic(storage);
-        ui = new Ui(dukeLogic);
+        this.storage = new Storage();
+        this.tasks = storage.readFromDatabase();
+        Parser parser = new Parser(this.tasks);
+        ui = new Ui(parser);
         storage.ui = ui;
     }
 
@@ -29,9 +33,8 @@ public class Duke {
                         + "| |_| | |_| |   <  __/\n"
                         + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello from\n" + logo + '\n' + "What can I do for you?");
-        storage.readFromDatabase();
         ui.monitor();
-        storage.writeToDatabase();
+        storage.writeToDatabase(tasks);
     }
 
     /**
