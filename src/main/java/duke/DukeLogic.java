@@ -1,9 +1,9 @@
 package duke;
 
-import java.util.ArrayList;
-
 import duke.tasks.InvalidTaskException;
 import duke.tasks.Task;
+
+import java.util.ArrayList;
 
 /**
  * Handles matching input to behaviour and execution action.
@@ -29,7 +29,7 @@ public class DukeLogic {
      */
     public static boolean takeInput(String input) {
         if (matches("bye", input)) {
-            Duke.renderOutput("Goodbye!");
+            Ui.renderOutput("Goodbye!");
             return false;
         } else if (matches("", input)) {
             return true;
@@ -59,7 +59,7 @@ public class DukeLogic {
             tasks.clear();
             return true;
         } else {
-            Duke.renderOutput("I did not understand, sorry!");
+            Ui.renderOutput("I did not understand, sorry!");
             return true;
         }
     }
@@ -86,16 +86,16 @@ public class DukeLogic {
         for (Task task : tasks) {
             result.append(String.format("%2d. %s\n", taskCount++, task));
         }
-        Duke.renderOutput(result.toString());
+        Ui.renderOutput(result.toString());
     }
 
     private static void addTask(String taskName, Task.Type type) {
         try {
             Task task = Task.createTask(taskName.trim(), type);
             tasks.add(task);
-            Duke.renderOutput("added: " + task);
+            Ui.renderOutput("added: " + task);
         } catch (InvalidTaskException err) {
-            Duke.renderOutput(err.getMessage());
+            Ui.renderOutput(err.getMessage());
         }
     }
 
@@ -108,7 +108,8 @@ public class DukeLogic {
             case DELETE:
                 tasks.remove(taskNum - 1);
                 output += "Noted. I have deleted the following:\n    " + task;
-                output += String.format("%s\nYou now have %d tasks in the list", output, tasks.size());
+                output += String.format(
+                        "%s\nYou now have %d tasks in the list", output, tasks.size());
                 break;
             case MARK_COMPLETE:
                 task.markComplete(true);
@@ -117,9 +118,9 @@ public class DukeLogic {
             default:
                 throw new IllegalArgumentException("Invalid action");
             }
-            Duke.renderOutput(output);
+            Ui.renderOutput(output);
         } catch (NumberFormatException err) {
-            Duke.renderOutput(
+            Ui.renderOutput(
                     "Which task are you interacting with?\n"
                             + "USAGE:\n{action} {task number}\n"
                             + "Example: > done 4\n"
@@ -127,7 +128,7 @@ public class DukeLogic {
                             + "Try the `list` command to see the list of tasks"
             );
         } catch (IndexOutOfBoundsException err) {
-            Duke.renderOutput("There is no task at that index.");
+            Ui.renderOutput("There is no task at that index.");
         }
     }
 }

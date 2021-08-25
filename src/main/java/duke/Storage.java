@@ -1,5 +1,6 @@
 package duke;
 
+import duke.tasks.Task;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,8 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.Stream;
-
-import duke.tasks.Task;
 
 /**
  * Handle database data and operations for Duke.
@@ -88,7 +87,7 @@ public class Storage {
             return;
         }
 
-        Duke.renderOutput("Reading last save  - " + filePath);
+        Ui.renderOutput("Reading last save  - " + filePath);
         ArrayList<String> failedParses = new ArrayList<>();
 
         try {
@@ -106,7 +105,7 @@ public class Storage {
             );
             databaseToString.close();
         } catch (IOException e) {
-            Duke.renderOutput("Save file could not be read. It will be wiped on the next save.");
+            Ui.renderOutput("Save file could not be read. It will be wiped on the next save.");
         }
 
         if (failedParses.size() > 0) {
@@ -116,9 +115,8 @@ public class Storage {
                     failedParses.size()
             );
             status += "Failed to parse\n:";
-            status += failedParses
-                    .stream().map(x -> x + "\n").reduce("", (a, b) -> a + b);
-            Duke.renderOutput(status);
+            status += failedParses.stream().map(x -> x + "\n").reduce("", (a, b) -> a + b);
+            Ui.renderOutput(status);
         }
     }
 
@@ -136,8 +134,8 @@ public class Storage {
         tasksList.forEach(x -> save.append(x.taskToString()).append(System.lineSeparator()));
         byte[] saveResult = save.toString().getBytes();
 
-        Duke.renderOutput("Saving tasks  - " + filePath);
-        Duke.renderOutput("DEBUG: Text to be saved \n" + save);
+        Ui.renderOutput("Saving tasks  - " + filePath);
+        Ui.renderOutput("DEBUG: Text to be saved \n" + save);
 
         try {
             if (!Files.isDirectory(folderPath)) {
@@ -149,7 +147,7 @@ public class Storage {
             Files.write(filePath, saveResult);
         } catch (IOException e) {
             // Potentially add why it failed (e.g. no write permissions in folder)
-            Duke.renderOutput("File could not be saved. - " + e.getMessage());
+            Ui.renderOutput("File could not be saved. - " + e.getMessage());
         }
     }
 }
