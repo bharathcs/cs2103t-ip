@@ -12,6 +12,7 @@ import java.util.ArrayList;
  */
 public class DukeLogic {
 
+    // todo: drop the use use of taskList
     final private Storage storage;
     final private ArrayList<Task> tasks;
 

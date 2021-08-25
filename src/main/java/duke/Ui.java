@@ -7,7 +7,9 @@ import java.util.Scanner;
  * Class to handle monitoring and taking in input.
  */
 public class Ui {
+
     final private DukeLogic dukeLogic;
+
     protected Ui(DukeLogic dukeLogic) {
         this.dukeLogic = dukeLogic;
     }
